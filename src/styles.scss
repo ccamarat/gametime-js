@@ -1,0 +1,235 @@
+@mixin toggle-switch(
+  $size: 200px,
+  $on-color: #bada55,
+  $off-color: #888,
+  $knob-color: #fff,
+  $transition: ease 0.3s,
+  $bounce-effect: 1.4
+) {
+  $knob-size: $size / 2 * 0.9;
+  $knob-offset: $size * 0.025;
+
+  // Hide the checkbox itself
+  input[type="checkbox"] {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  label {
+    cursor: pointer;
+    font-size: 0; // hide text
+    width: $size;
+    height: $size / 2;
+    background: $off-color;
+    display: inline-block;
+    border-radius: $size / 2;
+    position: relative;
+    transition: $transition;
+    transition-property: background;
+
+    &:after {
+      content: "";
+      position: absolute;
+      top: $knob-offset;
+      left: $knob-offset;
+      width: $knob-size;
+      height: $knob-size;
+      background: $knob-color;
+      border-radius: $knob-size;
+      transition: $transition;
+      transition-property: left, transform;
+    }
+    &:active:after {
+      width: $knob-size * $bounce-effect;
+    }
+  }
+  input:checked + label {
+    background: $on-color;
+
+    &:after {
+      left: calc(100% - #{$knob-offset});
+      transform: translateX(-100%);
+    }
+  }
+}
+@mixin plunger($size: 144px, $well-size: 18px, $color: #f7f7f7) {
+  $hover-color: darken($color, 2);
+
+  position: relative;
+
+  &:after {
+    content: "";
+    display: inline-block;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    background-color: $color;
+    background-image: linear-gradient(to top, $color, darken($color, 6.3));
+    border: 0;
+    margin: $well-size / 2;
+    box-shadow: 0px 6px 16px #aaa, inset 0px 2px 3px #fff;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    background: $hover-color;
+    background-image: linear-gradient(
+      to top,
+      $hover-color,
+      darken($hover-color, 6.3)
+    );
+  }
+
+  &:active {
+    box-shadow: 0px 2px 3px #aaa, 0px 2px 3px #fff;
+  }
+
+  // well
+  content: "";
+  background: transparent;
+  border: none;
+  border-top: 2px solid #ddd;
+  border-radius: 50%;
+  box-shadow: inset 0px 8px 48px #ddd;
+}
+
+html {
+  // Set initial scale for all visual elements
+  font-size: 16px;
+  font-family: tahoma, arial;
+}
+
+// Style the outline of the clock, making it look roughly like the gametime
+.clock-container {
+  width: 45rem;
+  height: 30rem;
+  border-radius: 2rem;
+  color: white;
+  background: #0f0d0e;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+/* **********************************************************************
+                                LCD
+********************************************************************** */
+.display-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  grid-template-rows: 1fr 8fr;
+  grid-template-areas:
+    "top-left middle top-right"
+    "left middle right";
+  margin: 3rem 4rem;
+  padding: 0.5rem;
+  background: #8f8488;
+  color: #322829;
+  height: 7rem;
+  align-items: center;
+
+  .display-header-left {
+    grid-area: top-left;
+  }
+  .display-header-right {
+    grid-area: top-right;
+  }
+  .center-display {
+    grid-area: middle;
+  }
+  .display-header {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .timer {
+    font-family: LCD14, Segment7Standard, consolas, Monaco, monospace;
+  }
+  .player-info .timer {
+    position: relative;
+    font-size: 5rem;
+    // Keep text within its bounding box
+    line-height: 5rem;
+    height: 4rem;
+  }
+  .player-info.active .timer:after {
+    position: absolute;
+    bottom: 0.2rem;
+    font-size: 2.5rem;
+    line-height: 3rem;
+    height: 2rem;
+  }
+  .left-display.active .timer:after {
+    content: "\2BC7";
+    right: 0.5rem;
+  }
+  .right-display.active .timer:after {
+    content: "\2BC8";
+    left: -1.5rem;
+  }
+}
+/* **********************************************************************
+                             User inputs
+********************************************************************** */
+.controls-container {
+  @include toggle-switch($size: 3rem, $bounce-effect: 1);
+
+  // Layout
+  flex: 1;
+
+  .button-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-auto-flow: column;
+    justify-items: center;
+
+    .program {
+      grid-column: 3 / 5;
+    }
+  }
+  .play-area {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    justify-items: center;
+  }
+  .dot-button {
+    $dot-button-size: 2rem;
+    $dot-button-color: #f7f7f7;
+
+    border: 0;
+    width: $dot-button-size;
+    height: $dot-button-size;
+    border-radius: 50%;
+    background-color: $dot-button-color;
+    background-image: linear-gradient(
+      to top,
+      $dot-button-color,
+      darken($dot-button-color, 6.3)
+    );
+  }
+  .plunger {
+    @include plunger(8rem, 0.8rem);
+
+    .paused & {
+      background: gold !important;
+    }
+    &.active {
+      background: chartreuse;
+    }
+    &.flag {
+      background: crimson;
+    }
+  }
+}
+/* **********************************************************************
+                               Helpers
+********************************************************************** */
+.hidden {
+  visibility: hidden;
+}

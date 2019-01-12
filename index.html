@@ -1,16 +1,80 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+  </head>
 
-<head>
-	<title>Parcel Sandbox</title>
-	<meta charset="UTF-8" />
-</head>
+  <body>
+    <div id="app">
+      <div class="clock-container">
+        <div class="display-container">
+          <div class="display-header display-header-left">
+            <span class="display-first player-1">First</span>
+            <span class="display-minutes">Minutes</span>
+            <span class="display-claim">Claim</span>
+            <span class="display-save">Save</span>
+            <span class="display-recall">Recall</span>
+          </div>
 
-<body>
-	<div id="app"></div>
+          <div class="display-header display-header-right">
+            <span class="display-game-end">Game End</span>
+            <span class="display-accumulator">Accum</span>
+            <span class="display-sound">Sound</span>
+            <span class="display-first player-2">First</span>
+          </div>
 
-	<script src="src/index.js">
-	</script>
-</body>
+          <div class="center-display">
+            <div class="preset-container">
+              <label>Preset:</label>
+              <div class="timer program"></div>
+            </div>
+            <div class="delay-container">
+              <label>Delay:</label>
+              <div class="timer delay"></div>
+            </div>
+          </div>
 
+          <div class="left-display player-info player-1 active">
+            <div class="timer"></div>
+          </div>
+
+          <div class="right-display player-info player-2">
+            <div class="timer"></div>
+          </div>
+        </div>
+
+        <div class="controls-container">
+          <section class="button-container">
+            <span>Counter</span>
+            <button class="dot-button button-counter"></button> <span>-</span>
+
+            <span>White</span>
+            <button class="dot-button button-white"></button> <span>+</span>
+
+            <span class="program">Program</span>
+            <button class="dot-button button-select"></button>
+            <span>Select</span>
+
+            <button class="dot-button button-verify"></button>
+            <span>Veriify</span>
+          </section>
+
+          <section class="play-area">
+            <button class="plunger player-2"></button>
+            <span class="switch">
+              <input
+                type="checkbox"
+                id="play-pause-switch"
+                class="play-pause-switch"
+              /><label for="play-pause-switch"></label>
+            </span>
+            <button class="plunger player-1"></button>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script src="src/index.js"></script>
+  </body>
 </html>
