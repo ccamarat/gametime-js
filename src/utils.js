@@ -44,10 +44,11 @@ export function makeEventChannel () {
     /**
      * Calls all listeners of `event`
      * @param event
+     * @param args
      */
-    trigger (event) {
+    trigger (event, ...args) {
       if (listeners[event]) {
-        listeners[event]();
+        listeners[event](...args);
       }
     }
   };

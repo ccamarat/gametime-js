@@ -1,8 +1,13 @@
+import { makeEventChannel } from './utils';
+import { DEFAULT_GAME_TIMEOUT } from './consts';
+
 const ON = true;
 const OFF = false;
 
 export const defaultSettings = {
   preset: 1,
+
+  gameTimeout: DEFAULT_GAME_TIMEOUT, // todo - wire in
 
   // The Accumulate option works in conjunction with the Delay option by adding to the
   // player’s clock any delay time not used by the player. As an example of what happens,
@@ -11,7 +16,7 @@ export const defaultSettings = {
   // game clock would show 5 minutes and 2 seconds. The additional 2 seconds added to the
   // player’s game clock is the 5-second delay minus the 3 seconds actually used.
   accumulator: OFF, // "On" enables "accumulatorDelay" and disables "delay"
-  accumulatorDelay: 30, // seconds
+  accumulatorDelay: 2, // seconds
 
   // When you set a countdown delay, a player’s clock does not start running until the delay
   // interval has passed. For example, setting a countdown delay of five seconds allows five
@@ -61,6 +66,8 @@ export const defaultSettings = {
   // Important. Make sure to turn off the GAME END feature after playing the game. It
   // can prematurely end other games played under more traditional time controls.
   gameEnd: OFF,
+  // NEW
+  gameEndCounter: 1,
 
   // The GameTime™ beeps when a player loses a game by failing to meet a time control.
   // You can also set GameTime™ to beep before a time control is about to expire (see the
@@ -69,7 +76,7 @@ export const defaultSettings = {
 
   // The countdown delay is most useful for sudden-death time controls. However, you can
   // apply the delay to all time controls.
-  delayAll: ON,
+  delayAll: ON, // related to delay setting? Why is delay=0 mentioned in description?
 
   // For Word games time never runs out, so when the main time has counted down to zero,
   // the clock enters overtime. In overtime the time is counted up instead of down. When in
@@ -87,31 +94,89 @@ export const defaultSettings = {
   second: ON
 };
 
-function configure(
-  preset,
-  accumulator,
-  accumulatorDelay,
-  delay,
-  claim,
-  claimAll,
-  counter,
-  gameEnd,
-  sound,
-  delayAll,
-  word,
-  second) {
+function assertIsBoolean(value, key) {
+  if (!(value === true || value === false)) {
+    throw new Error(`${key} must be boolean`);
+  }
 }
+function assertIsInRange(value, min, max, key) {
+  if (value < min || value > max) {
+    throw new Error(`${key} must be a number between ${min} and ${max}; got ${value}`);
+  }
+}
+export function makeSettings () {
+  const settings = JSON.parse(JSON.stringify(defaultSettings));
+  const settingsProxy = new Proxy(settings, {
+    set (obj, prop, value) {
+      switch (prop) {
+        case 'preset':
+          assertIsInRange(value, 1, 100, 'preset');
+          // loadPreset(value);
+          break;
+        case 'accumulator':
+          assertIsBoolean(value, 'accumulator');
+          break;
+        case 'accumulatorDelay':
+          assertIsInRange(value, 1, 100, 'accumulatorDelay');
+          break;
+        case 'delay':
+          assertIsInRange(value, 1, 19, 'delay');
+          break;
+        case 'claim':
+          assertIsBoolean(value, 'claim');
+          break;
+        case 'claimAll':
+          assertIsBoolean(value, 'claimAll');
+          break;
+        case 'save':
+          break;
+        case 'recall':
+          break;
+        case 'counter':
+          assertIsBoolean(value, 'counter');
+          break;
+        case 'gameEnd':
+          assertIsBoolean(value, 'gameEnd');
+          break;
+        case 'gameEndCounter':
+          assertIsInRange(value, 1, 99999, 'gameEndCounter');
+          break;
+        case 'sound':
+          assertIsBoolean(value, 'sound');
+          break;
+        case 'delayAll':
+          assertIsBoolean(value, 'delayAll');
+          break;
+        case 'word':
+          assertIsBoolean(value, 'word');
+          break;
+        case 'second':
+          assertIsBoolean(value, 'second');
+          break;
+        case 'on':
+        case 'off':
+        case 'trigger':
+          obj[prop] = value;
+          return true;
+        default:
+          throw new Error(`Cannot add new "${prop}" to settings object.`);
+      }
 
-configure(1,
-  ON,
-  ON,
-  20,
-  ON,
-  ON,
-  ON,
-  OFF,
-  ON,
-  ON,
-  OFF,
-  ON
-);
+      // signal pending change
+      settingsProxy.trigger(`change`, prop, value, obj[prop]);
+      // settingsProxy.trigger(`${prop}-changed`, value, obj[prop]);
+
+      console.log(prop, obj[prop], '=>', value);
+
+      // commit change
+      obj[prop] = value;
+
+      // signal success
+      return true;
+    }
+  });
+
+  const events = makeEventChannel();
+  Object.assign(settingsProxy, events);
+  return settingsProxy;
+}

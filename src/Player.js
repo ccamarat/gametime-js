@@ -1,10 +1,10 @@
 import { makeTimer } from './Timer';
 import { DEFAULT_GAME_TIMEOUT, DEFAULT_TURN_DELAY } from './consts';
 
-export function makePlayer () {
+export function makePlayer (settings) {
   let moveCount = 0;
   let isActive = false;
-  const delay = makeTimer(DEFAULT_TURN_DELAY);
+  const delay = makeTimer(settings.delay);
   const timer = makeTimer(DEFAULT_GAME_TIMEOUT);
 
   const player = {

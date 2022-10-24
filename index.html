@@ -18,20 +18,27 @@
           </div>
 
           <div class="display-header display-header-right">
-            <span class="display-game-end">Game End</span>
+            <span class="display-game-end">
+              Game End
+              (<span class="game-end-remaining"></span>)
+            </span>
             <span class="display-accumulator">Accum</span>
             <span class="display-sound">Sound</span>
             <span class="display-first player-2">First</span>
           </div>
 
           <div class="center-display">
+            <div class="counter-container">
+              <label>Counter:</label>
+              <span class="timer counter"></span>
+            </div>
             <div class="preset-container">
               <label>Preset:</label>
-              <div class="timer program"></div>
+              <span class="timer program"></span>
             </div>
             <div class="delay-container">
               <label>Delay:</label>
-              <div class="timer delay"></div>
+              <span class="timer delay"></span>
             </div>
           </div>
 
@@ -74,6 +81,56 @@
         </div>
       </div>
     </div>
+
+    <section class="settings">
+      <header>
+        <h3>Settings</h3>
+      </header>
+      <div class="settings-container">
+        <div class="preset-setting">
+          <label>Preset:
+            <input type="number" class="preset-value" />
+          </label>
+        </div>
+        <div class="accumulator-setting">
+          <span>Accumulator:</span><br />
+          &nbsp;&nbsp;<label>Enabled:<input type="checkbox" class="use-accumulator" /></label><br/>
+          &nbsp;&nbsp;<label>Delay:<input type="number" class="accumulator-value" /></label>
+        </div>
+        <div class="delay-setting">
+          <span>Delay:</span><br />
+          &nbsp;&nbsp;<label>Enabled:<input type="checkbox" class="use-delay" /></label><br/>
+          &nbsp;&nbsp;<label>Delay:<input type="number" class="delay-value" /></label>
+        </div>
+        <div class="claim-setting">
+          <span>Claim:</span><br />
+          &nbsp;&nbsp;<label>Enabled:<input type="checkbox" class="use-claim" /></label><br/>
+          &nbsp;&nbsp;<label>Claim All:<input type="checkbox" class="use-claim-all" /></label><br/>
+        </div>
+        <div class="show-counter-setting">
+          <label>Show Counter:<input type="checkbox" class="show-counter" /></label>
+        </div>
+        <div class="game-end-setting">
+          <span>Game End (Sudden Death?):</span><br />
+          &nbsp;&nbsp;<label>Enabled:<input type="checkbox" class="use-game-end" /></label><br/>
+          &nbsp;&nbsp;<label>Limit:<input type="number" class="game-end-value" /></label>
+        </div>
+        <div class="sound-setting">
+          <label>Enable Sound:<input type="checkbox" class="use-sound" /></label>
+        </div>
+        <!-- this value seems like it should be related to "delay"
+        <div class="delay-all-setting">
+          <label>Delay All:<input type="checkbox" class="use-delay-all" /></label>
+        </div>
+        -->
+        <div class="word-setting">
+          <label>Word Mode:<input type="checkbox" class="use-word" /></label>
+        </div>
+        <div class="second-display-setting">
+          <label>Show Seconds:<input type="checkbox" class="show-seconds" /></label>
+        </div>
+      </div>
+    </section>
 
     <script src="src/index.js"></script>
   </body>
